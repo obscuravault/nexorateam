@@ -7,58 +7,30 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            /* Default colors (will be changed based on gender/theme) */
             --primary: #6a11cb;
             --secondary: #2575fc;
-            --accent: #ff4da6;
-            --background: #0f0c29;
-            --surface: #1a1a2e;
-            --text: #ffffff;
-            --text-secondary: #b8b8b8;
-            --card-bg: rgba(30, 30, 60, 0.7);
-            --neon-glow: 0 0 10px var(--primary), 0 0 20px var(--primary), 0 0 30px var(--primary);
-            --transition: all 0.3s ease;
+            --accent: #00c9ff;
+            --dark: #121212;
+            --light: #f8f9fa;
+            --success: #00e676;
+            --warning: #ffab00;
+            --danger: #ff1744;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --glass: rgba(255, 255, 255, 0.05);
+            --glow: 0 0 10px rgba(106, 17, 203, 0.5);
         }
 
-        /* Boy Theme 1 - Cyber Blue */
-        .theme-boy-1 {
-            --primary: #00d4ff;
-            --secondary: #0095ff;
-            --accent: #ff2975;
-            --background: #0a0e17;
-            --surface: #141a29;
-            --card-bg: rgba(20, 26, 41, 0.8);
-        }
+        /* Boy color palettes */
+        .boy-theme-1 { --primary: #0d47a1; --secondary: #1976d2; --accent: #42a5f5; }
+        .boy-theme-2 { --primary: #00695c; --secondary: #00897b; --accent: #4db6ac; }
+        .boy-theme-3 { --primary: #4a148c; --secondary: #7b1fa2; --accent: #ba68c8; }
+        .boy-theme-4 { --primary: #b71c1c; --secondary: #d32f2f; --accent: #f44336; }
 
-        /* Boy Theme 2 - Neon Green */
-        .theme-boy-2 {
-            --primary: #39ff14;
-            --secondary: #00ff88;
-            --accent: #ff2a6d;
-            --background: #0a1929;
-            --surface: #112240;
-            --card-bg: rgba(17, 34, 64, 0.8);
-        }
-
-        /* Girl Theme 1 - Cosmic Pink */
-        .theme-girl-1 {
-            --primary: #ff4da6;
-            --secondary: #ff8ecd;
-            --accent: #00f2fe;
-            --background: #1a0b2e;
-            --surface: #2d1b69;
-            --card-bg: rgba(45, 27, 105, 0.8);
-        }
-
-        /* Girl Theme 2 - Purple Nebula */
-        .theme-girl-2 {
-            --primary: #c471ed;
-            --secondary: #f7797d;
-            --accent: #4facfe;
-            --background: #0f0c29;
-            --surface: #302b63;
-            --card-bg: rgba(48, 43, 99, 0.8);
-        }
+        /* Girl color palettes */
+        .girl-theme-1 { --primary: #880e4f; --secondary: #c2185b; --accent: #f06292; }
+        .girl-theme-2 { --primary: #4a148c; --secondary: #7c43bd; --accent: #b388ff; }
+        .girl-theme-3 { --primary: #00695c; --secondary: #26a69a; --accent: #80cbc4; }
+        .girl-theme-4 { --primary: #e65100; --secondary: #ff9800; --accent: #ffcc80; }
 
         * {
             margin: 0;
@@ -68,204 +40,127 @@
         }
 
         body {
-            background: var(--background);
-            color: var(--text);
+            background: linear-gradient(135deg, var(--dark) 0%, #1a1a2e 50%, var(--dark) 100%);
+            color: var(--light);
             min-height: 100vh;
             overflow-x: hidden;
-            transition: var(--transition);
         }
 
         .container {
-            width: 90%;
+            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 20px;
         }
 
-        /* Welcome Screen */
-        .welcome-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            transition: opacity 0.8s ease;
-        }
-
-        .welcome-screen.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .logo {
-            font-size: 4rem;
-            font-weight: 800;
-            margin-bottom: 2rem;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            text-shadow: var(--neon-glow);
-            animation: pulse 2s infinite;
-        }
-
-        .tagline {
-            font-size: 1.5rem;
-            margin-bottom: 3rem;
-            text-align: center;
-            max-width: 600px;
-        }
-
-        .gender-selection {
-            display: flex;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .gender-btn {
-            padding: 15px 40px;
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 1.2rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: var(--transition);
-            backdrop-filter: blur(10px);
-        }
-
-        .gender-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .theme-selection {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .theme-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid white;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .theme-btn.active {
-            transform: scale(1.2);
-            box-shadow: 0 0 10px white;
-        }
-
-        .start-btn {
-            padding: 15px 50px;
-            background: white;
-            color: var(--primary);
-            border: none;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .start-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-        }
-
-        /* Header */
+        /* Header Styles */
         header {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(18, 18, 18, 0.8);
             backdrop-filter: blur(10px);
-            padding: 15px 0;
+            border-bottom: 1px solid var(--glass);
             position: sticky;
             top: 0;
-            z-index: 100;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            padding: 15px 0;
         }
 
-        .nav-container {
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .nav-logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: var(--neon-glow);
-        }
-
-        .nav-links {
+        .logo {
             display: flex;
-            gap: 2rem;
+            align-items: center;
+            gap: 10px;
         }
 
-        .nav-link {
-            color: var(--text);
+        .logo h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+
+        .logo i {
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav a {
+            color: var(--light);
             text-decoration: none;
             font-weight: 500;
             padding: 8px 15px;
             border-radius: 20px;
-            transition: var(--transition);
+            transition: all 0.3s ease;
+            position: relative;
         }
 
-        .nav-link:hover, .nav-link.active {
-            background: var(--primary);
-            box-shadow: var(--neon-glow);
+        nav a:hover {
+            color: var(--accent);
+            background: var(--glass);
+        }
+
+        nav a.active {
+            color: var(--accent);
+            background: var(--glass);
         }
 
         .user-actions {
             display: flex;
-            gap: 1rem;
             align-items: center;
+            gap: 15px;
         }
 
-        .theme-toggle, .user-profile {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--surface);
+        .btn {
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 600;
             cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .theme-toggle:hover, .user-profile:hover {
-            background: var(--primary);
-            box-shadow: var(--neon-glow);
-        }
-
-        /* Main Content */
-        .page {
-            display: none;
-            padding: 40px 0;
-            min-height: 80vh;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        .hero {
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
             text-align: center;
-            padding: 60px 0;
-            background: radial-gradient(circle at center, var(--surface) 0%, var(--background) 70%);
-            border-radius: 20px;
-            margin-bottom: 40px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: var(--glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent);
+            color: var(--dark);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 100px 0;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(106, 17, 203, 0.1) 0%, transparent 70%);
             position: relative;
             overflow: hidden;
         }
@@ -277,97 +172,144 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" opacity="0.05"><polygon fill="white" points="0,1000 1000,1000 1000,0"/></svg>');
+            pointer-events: none;
         }
 
-        .hero h1 {
+        .hero h2 {
             font-size: 3.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            position: relative;
-            z-index: 1;
+            line-height: 1.2;
         }
 
         .hero p {
             font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto 2rem;
-            color: var(--text-secondary);
-            position: relative;
-            z-index: 1;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            color: #ccc;
         }
 
-        .cta-button {
-            display: inline-block;
-            padding: 15px 40px;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: var(--transition);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            position: relative;
-            z-index: 1;
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
         }
 
-        .cta-button:hover {
+        /* Gender Selection Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, var(--dark) 0%, #1a1a2e 100%);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid var(--glass);
+        }
+
+        .modal h2 {
+            margin-bottom: 20px;
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        .modal p {
+            margin-bottom: 30px;
+            color: #ccc;
+        }
+
+        .gender-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .gender-option {
+            padding: 20px 30px;
+            border-radius: 15px;
+            background: var(--card-bg);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .gender-option:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            border-color: var(--accent);
+            box-shadow: var(--glow);
+        }
+
+        .gender-option i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .theme-options {
+            display: none;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .theme-option {
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .theme-option:hover {
+            transform: scale(1.05);
+            border-color: var(--accent);
+        }
+
+        .color-swatch {
+            height: 30px;
+            border-radius: 5px;
+            margin-bottom: 10px;
         }
 
         /* Partners Section */
         .partners {
-            margin: 60px 0;
-        }
-
-        .section-title {
-            font-size: 2rem;
+            padding: 60px 0;
             text-align: center;
-            margin-bottom: 2rem;
-            position: relative;
         }
 
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 3px;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            border-radius: 3px;
+        .partners h3 {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: var(--accent);
         }
 
         .partners-scroll {
             display: flex;
             overflow: hidden;
-            padding: 20px 0;
             position: relative;
-        }
-
-        .partners-scroll::before, .partners-scroll::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            width: 100px;
-            height: 100%;
-            z-index: 2;
-        }
-
-        .partners-scroll::before {
-            left: 0;
-            background: linear-gradient(to right, var(--background), transparent);
-        }
-
-        .partners-scroll::after {
-            right: 0;
-            background: linear-gradient(to left, var(--background), transparent);
+            padding: 20px 0;
         }
 
         .partners-track {
@@ -376,23 +318,30 @@
         }
 
         .partner-logo {
+            flex: 0 0 auto;
+            width: 150px;
             height: 80px;
-            margin: 0 40px;
-            filter: grayscale(1) brightness(2);
-            opacity: 0.7;
-            transition: var(--transition);
+            margin: 0 30px;
+            background: var(--card-bg);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--accent);
+            border: 1px solid var(--glass);
         }
 
-        .partner-logo:hover {
-            filter: grayscale(0) brightness(1);
-            opacity: 1;
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
 
-        /* Courses Grid */
+        /* Course Cards */
         .courses-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
+            gap: 25px;
             margin-top: 40px;
         }
 
@@ -400,88 +349,59 @@
             background: var(--card-bg);
             border-radius: 15px;
             overflow: hidden;
-            transition: var(--transition);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid var(--glass);
             backdrop-filter: blur(10px);
         }
 
         .course-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), var(--neon-glow);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
         }
 
         .course-thumbnail {
-            width: 100%;
             height: 180px;
-            object-fit: cover;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            position: relative;
+            overflow: hidden;
         }
 
-        .course-info {
+        .course-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .course-content {
             padding: 20px;
         }
 
-        .course-title {
+        .course-content h3 {
             font-size: 1.3rem;
             margin-bottom: 10px;
+            color: var(--accent);
         }
 
         .course-meta {
             display: flex;
             justify-content: space-between;
-            color: var(--text-secondary);
+            margin-top: 15px;
             font-size: 0.9rem;
-            margin-bottom: 15px;
-        }
-
-        .course-description {
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-
-        .enroll-btn {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .enroll-btn:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
+            color: #aaa;
         }
 
         /* Video Player */
-        .video-container {
-            position: relative;
-            width: 100%;
+        .video-player-container {
+            padding: 40px 0;
             max-width: 1000px;
             margin: 0 auto;
-            background: black;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         .video-wrapper {
             position: relative;
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */
-        }
-
-        .video-wrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
-            height: 100%;
-            border: none;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            margin-bottom: 40px;
         }
 
         .video-cover {
@@ -490,8 +410,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            z-index: 5;
+            background: var(--dark);
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            overflow: hidden;
         }
 
         .top-cover, .bottom-cover {
@@ -499,7 +424,8 @@
             left: 0;
             width: 100%;
             height: 60px;
-            background: var(--background);
+            background: var(--dark);
+            z-index: 2;
         }
 
         .top-cover {
@@ -510,16 +436,28 @@
             bottom: 0;
         }
 
-        .custom-controls {
+        .video-player {
             position: absolute;
-            bottom: 0;
+            top: 0;
             left: 0;
             width: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            height: 100%;
+            border: none;
+            border-radius: 10px;
+            z-index: 0;
+        }
+
+        .custom-controls {
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
             display: flex;
             align-items: center;
-            padding: 10px;
-            z-index: 10;
+            justify-content: space-between;
+            z-index: 3;
         }
 
         .control-btn {
@@ -527,35 +465,30 @@
             border: none;
             color: white;
             font-size: 1.2rem;
-            margin: 0 10px;
             cursor: pointer;
+            padding: 5px 10px;
         }
 
         .progress-bar {
             flex-grow: 1;
             height: 5px;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255,255,255,0.3);
+            margin: 0 15px;
             border-radius: 5px;
-            margin: 0 10px;
-            position: relative;
             overflow: hidden;
         }
 
         .progress {
-            position: absolute;
-            top: 0;
-            left: 0;
             height: 100%;
-            background: var(--primary);
-            width: 0%;
-            transition: width 0.1s linear;
+            background: var(--accent);
+            width: 30%;
         }
 
-        /* Tutors Grid */
+        /* Tutors Page */
         .tutors-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
+            gap: 25px;
             margin-top: 40px;
         }
 
@@ -563,612 +496,458 @@
             background: var(--card-bg);
             border-radius: 15px;
             overflow: hidden;
-            transition: var(--transition);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            border: 1px solid var(--glass);
+            text-align: center;
+            padding: 25px 20px;
         }
 
         .tutor-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), var(--neon-glow);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
         }
 
         .tutor-photo {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-
-        .tutor-info {
-            padding: 20px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
         }
 
         .tutor-name {
             font-size: 1.3rem;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+            color: var(--accent);
         }
 
         .tutor-bio {
-            color: var(--text-secondary);
-            margin-bottom: 15px;
-            line-height: 1.5;
+            color: #ccc;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
         }
 
         .tutor-actions {
             display: flex;
+            justify-content: center;
             gap: 10px;
         }
 
-        .tutor-btn {
+        /* Course Content Page */
+        .course-header {
+            padding: 60px 0 30px;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(106, 17, 203, 0.1) 0%, transparent 70%);
+        }
+
+        .course-info {
+            display: flex;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .course-details {
             flex: 1;
-            padding: 10px;
-            border: none;
+        }
+
+        .teacher-info {
+            width: 300px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .lessons-list {
+            margin-top: 40px;
+        }
+
+        .lesson-item {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .lesson-item:hover {
+            border-color: var(--accent);
+            transform: translateX(5px);
+        }
+
+        .lesson-thumbnail {
+            width: 120px;
+            height: 80px;
             border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            flex-shrink: 0;
         }
 
-        .website-btn {
-            background: var(--secondary);
-            color: white;
+        .lesson-content {
+            flex-grow: 1;
         }
 
-        .courses-btn {
-            background: var(--primary);
-            color: white;
+        .lesson-content h4 {
+            margin-bottom: 5px;
+            color: var(--accent);
         }
 
         /* Footer */
         footer {
-            background: var(--surface);
+            background: rgba(18, 18, 18, 0.9);
             padding: 40px 0 20px;
             margin-top: 60px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid var(--glass);
         }
 
         .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
             margin-bottom: 30px;
         }
 
+        .footer-section {
+            flex: 1;
+            min-width: 200px;
+        }
+
         .footer-section h3 {
-            font-size: 1.3rem;
+            color: var(--accent);
             margin-bottom: 20px;
-            position: relative;
+            font-size: 1.2rem;
         }
 
-        .footer-section h3::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 40px;
-            height: 2px;
-            background: var(--primary);
-        }
-
-        .footer-links {
+        .footer-section ul {
             list-style: none;
         }
 
-        .footer-links li {
+        .footer-section ul li {
             margin-bottom: 10px;
         }
 
-        .footer-links a {
-            color: var(--text-secondary);
+        .footer-section a {
+            color: #ccc;
             text-decoration: none;
-            transition: var(--transition);
+            transition: color 0.3s ease;
         }
 
-        .footer-links a:hover {
-            color: var(--primary);
-            padding-left: 5px;
+        .footer-section a:hover {
+            color: var(--accent);
         }
 
         .copyright {
             text-align: center;
             padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-secondary);
+            border-top: 1px solid var(--glass);
+            color: #888;
             font-size: 0.9rem;
         }
 
-        /* Animations */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        /* Responsive */
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .nav-links {
-                display: none;
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
             }
-
-            .hero h1 {
+            
+            nav ul {
+                gap: 10px;
+            }
+            
+            .hero h2 {
                 font-size: 2.5rem;
             }
-
-            .gender-selection {
+            
+            .hero-buttons {
                 flex-direction: column;
-                gap: 1rem;
+                align-items: center;
             }
-
+            
             .courses-grid, .tutors-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .course-info {
+                flex-direction: column;
+            }
+            
+            .teacher-info {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Welcome Screen -->
-    <div class="welcome-screen" id="welcomeScreen">
-        <div class="logo">Nexora</div>
-        <p class="tagline">A Free 2025 Advanced Level Video Learning Platform</p>
-        
-        <div class="gender-selection">
-            <button class="gender-btn" data-gender="boy">I'm a Boy</button>
-            <button class="gender-btn" data-gender="girl">I'm a Girl</button>
+    <!-- Gender Selection Modal -->
+    <div id="genderModal" class="modal">
+        <div class="modal-content">
+            <h2>Welcome to Nexora</h2>
+            <p>Please select your gender to personalize your experience</p>
+            <div class="gender-options">
+                <div class="gender-option" data-gender="boy">
+                    <i class="fas fa-mars"></i>
+                    <span>Boy</span>
+                </div>
+                <div class="gender-option" data-gender="girl">
+                    <i class="fas fa-venus"></i>
+                    <span>Girl</span>
+                </div>
+            </div>
+            <div id="themeOptions" class="theme-options">
+                <!-- Theme options will be populated by JavaScript -->
+            </div>
+            <button id="confirmTheme" class="btn btn-primary" style="display: none;">Confirm Selection</button>
         </div>
-        
-        <div class="theme-selection" id="themeSelection" style="display: none;">
-            <div class="theme-btn theme-boy-1 active" data-theme="boy-1"></div>
-            <div class="theme-btn theme-boy-2" data-theme="boy-2"></div>
-            <div class="theme-btn theme-girl-1" data-theme="girl-1"></div>
-            <div class="theme-btn theme-girl-2" data-theme="girl-2"></div>
-        </div>
-        
-        <button class="start-btn" id="startBtn" style="display: none;">Start Learning</button>
     </div>
 
-    <!-- Main Website -->
-    <div id="mainWebsite" style="display: none;">
-        <header>
-            <div class="container nav-container">
-                <div class="nav-logo">Nexora</div>
-                <nav class="nav-links">
-                    <a href="#" class="nav-link active" data-page="home">Home</a>
-                    <a href="/courses.html" class="nav-link" data-page="courses">Courses</a>
-                    <a href="#" class="nav-link" data-page="tutors">Tutors</a>
-                    <a href="#" class="nav-link" data-page="content">Course Content</a>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-atom"></i>
+                    <h1>Nexora</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="active" data-page="home">Home</a></li>
+                        <li><a href="#" data-page="courses">Courses</a></li>
+                        <li><a href="#" data-page="tutors">Tutors</a></li>
+                    </ul>
                 </nav>
                 <div class="user-actions">
-                    <div class="theme-toggle" id="themeToggle">
-                        <i class="fas fa-palette"></i>
-                    </div>
-                    <div class="user-profile">
-                        <i class="fas fa-user"></i>
+                    <button class="btn btn-outline" id="themeToggle">Change Theme</button>
+                    <button class="btn btn-primary">Sign In</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main id="mainContent">
+        <!-- Home Page -->
+        <section id="homePage" class="page active">
+            <div class="hero">
+                <div class="container">
+                    <h2>Advanced Level Science Education</h2>
+                    <p>Free 2025 Advanced Level video lessons designed for students aged 17-23. Master complex science concepts with our futuristic learning platform.</p>
+                    <div class="hero-buttons">
+                        <a href="#" class="btn btn-primary" data-page="courses">Explore Courses</a>
+                        <a href="#" class="btn btn-outline" data-page="tutors">Meet Our Tutors</a>
                     </div>
                 </div>
             </div>
-        </header>
 
-        <main>
-            <!-- Home Page -->
-            <section class="page active" id="home">
+            <div class="partners">
                 <div class="container">
-                    <div class="hero">
-                        <h1>Welcome to Nexora Learning</h1>
-                        <p>Embark on an educational journey through our futuristic learning platform. Master advanced level science with interactive video lessons from expert tutors.</p>
-                        <a href="#" class="cta-button" data-page="courses">Explore Courses</a>
-                    </div>
-
-                    <div class="partners">
-                        <h2 class="section-title">Our Verified Partners</h2>
-                        <div class="partners-scroll">
-                            <div class="partners-track">
-                                <img src="https://via.placeholder.com/150x80/6a11cb/ffffff?text=Science+Org" alt="Partner" class="partner-logo">
-                                <img src="https://via.placeholder.com/150x80/2575fc/ffffff?text=EduTech" alt="Partner" class="partner-logo">
-                                <img src="https://via.placeholder.com/150x80/ff4da6/ffffff?text=Learn+Lab" alt="Partner" class="partner-logo">
-                                <img src="https://via.placeholder.com/150x80/00d4ff/ffffff?text=STEM+Academy" alt="Partner" class="partner-logo">
-                                <img src="https://via.placeholder.com/150x80/39ff14/ffffff?text=Science+World" alt="Partner" class="partner-logo">
-                                <img src="https://via.placeholder.com/150x80/c471ed/ffffff?text=Future+Edu" alt="Partner" class="partner-logo">
-                                <!-- Duplicate for seamless scroll -->
-                                <img src="https://via.placeholder.com/150x80/6a11cb/ffffff?text=Science+Org" alt="Partner" class="partner-logo">
-                                <img src="https://via.placeholder.com/150x80/2575fc/ffffff?text=EduTech" alt="Partner" class="partner-logo">
-                                <img src="https://via.placeholder.com/150x80/ff4da6/ffffff?text=Learn+Lab" alt="Partner" class="partner-logo">
-                                <img src="https://via.placeholder.com/150x80/00d4ff/ffffff?text=STEM+Academy" alt="Partner" class="partner-logo">
-                                <img src="https://via.placeholder.com/150x80/39ff14/ffffff?text=Science+World" alt="Partner" class="partner-logo">
-                                <img src="https://via.placeholder.com/150x80/c471ed/ffffff?text=Future+Edu" alt="Partner" class="partner-logo">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="featured-courses">
-                        <h2 class="section-title">Featured Courses</h2>
-                        <div class="courses-grid">
-                            <!-- Course cards will be populated by JavaScript -->
+                    <h3>Our Verified Partners</h3>
+                    <div class="partners-scroll">
+                        <div class="partners-track">
+                            <div class="partner-logo">ScienceOrg</div>
+                            <div class="partner-logo">EduTech</div>
+                            <div class="partner-logo">LearnLab</div>
+                            <div class="partner-logo">FutureEd</div>
+                            <div class="partner-logo">StudyPro</div>
+                            <div class="partner-logo">KnowledgeHub</div>
+                            <!-- Duplicate for seamless scroll -->
+                            <div class="partner-logo">ScienceOrg</div>
+                            <div class="partner-logo">EduTech</div>
+                            <div class="partner-logo">LearnLab</div>
+                            <div class="partner-logo">FutureEd</div>
+                            <div class="partner-logo">StudyPro</div>
+                            <div class="partner-logo">KnowledgeHub</div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            <!-- Courses Page -->
-            <section class="page" id="courses">
-                <div class="container">
-                    <h1 class="section-title">All Courses</h1>
+            <div class="container">
+                <h2 style="text-align: center; margin: 60px 0 30px; color: var(--accent);">Featured Courses</h2>
+                <div class="courses-grid">
+                    <!-- Course cards will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Courses Page -->
+        <section id="coursesPage" class="page">
+            <div class="container">
+                <div style="padding: 60px 0 30px;">
+                    <h1 style="text-align: center; margin-bottom: 40px; color: var(--accent);">Our Courses</h1>
+                    
+                    <div style="display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap;">
+                        <div style="flex-grow: 1;">
+                            <input type="text" placeholder="Search courses..." style="width: 100%; padding: 12px 15px; border-radius: 30px; border: 1px solid var(--glass); background: var(--card-bg); color: white;">
+                        </div>
+                        <select style="padding: 12px 15px; border-radius: 30px; border: 1px solid var(--glass); background: var(--card-bg); color: white;">
+                            <option>Filter by Subject</option>
+                            <option>Physics</option>
+                            <option>Chemistry</option>
+                            <option>Biology</option>
+                        </select>
+                        <select style="padding: 12px 15px; border-radius: 30px; border: 1px solid var(--glass); background: var(--card-bg); color: white;">
+                            <option>Filter by Teacher</option>
+                        </select>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                        <h3>All Courses</h3>
+                        <div>
+                            <button class="btn btn-outline" style="padding: 8px 15px; margin-right: 10px;"><i class="fas fa-th-large"></i></button>
+                            <button class="btn btn-outline" style="padding: 8px 15px;"><i class="fas fa-list"></i></button>
+                        </div>
+                    </div>
+                    
                     <div class="courses-grid">
                         <!-- Course cards will be populated by JavaScript -->
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- Tutors Page -->
-            <section class="page" id="tutors">
-                <div class="container">
-                    <h1 class="section-title">Our Expert Tutors</h1>
+        <!-- Tutors Page -->
+        <section id="tutorsPage" class="page">
+            <div class="container">
+                <div style="padding: 60px 0 30px;">
+                    <h1 style="text-align: center; margin-bottom: 40px; color: var(--accent);">Our Expert Tutors</h1>
                     <div class="tutors-grid">
                         <!-- Tutor cards will be populated by JavaScript -->
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- Course Content Page -->
-            <section class="page" id="content">
+        <!-- Video Player Page -->
+        <section id="videoPage" class="page">
+            <div class="video-player-container">
                 <div class="container">
-                    <h1 class="section-title">Course Content</h1>
-                    <div class="courses-grid">
-                        <!-- Course content cards will be populated by JavaScript -->
+                    <div style="padding: 40px 0 20px;">
+                        <h1 style="margin-bottom: 10px; color: var(--accent);" id="videoTitle">Video Title</h1>
+                        <p id="videoDescription" style="color: #ccc; margin-bottom: 30px;">Video description will appear here</p>
+                        
+                        <div class="video-wrapper">
+                            <div class="top-cover"></div>
+                            <div class="video-cover">
+                                <div style="text-align: center;">
+                                    <i class="fas fa-play-circle" style="font-size: 4rem; color: var(--accent); margin-bottom: 15px; display: block;"></i>
+                                    <p>Video will start playing soon</p>
+                                </div>
+                            </div>
+                            <div class="bottom-cover"></div>
+                            <iframe class="video-player" id="youtubePlayer" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            <div class="custom-controls">
+                                <button class="control-btn"><i class="fas fa-play"></i></button>
+                                <div class="progress-bar">
+                                    <div class="progress"></div>
+                                </div>
+                                <button class="control-btn"><i class="fas fa-volume-up"></i></button>
+                                <button class="control-btn"><i class="fas fa-expand"></i></button>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 40px;">
+                            <h2 style="margin-bottom: 20px; color: var(--accent);">Next Lessons</h2>
+                            <div class="courses-grid">
+                                <!-- Next lesson cards will be populated by JavaScript -->
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </section>
-        </main>
-
-        <footer>
-            <div class="container">
-                <div class="footer-content">
-                    <div class="footer-section">
-                        <h3>About Nexora</h3>
-                        <p>Nexora is a futuristic learning platform designed for advanced level science students. We provide high-quality video lessons from expert tutors.</p>
-                    </div>
-                    <div class="footer-section">
-                        <h3>Quick Links</h3>
-                        <ul class="footer-links">
-                            <li><a href="#" data-page="home">Home</a></li>
-                            <li><a href="#" data-page="courses">Courses</a></li>
-                            <li><a href="#" data-page="tutors">Tutors</a></li>
-                            <li><a href="#" data-page="content">Course Content</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-section">
-                        <h3>Contact Us</h3>
-                        <ul class="footer-links">
-                            <li><i class="fas fa-envelope"></i> info@nexora.com</li>
-                            <li><i class="fas fa-phone"></i> +1 234 567 8900</li>
-                            <li><i class="fas fa-map-marker-alt"></i> 123 Science Street, EduCity</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="copyright">
-                    &copy; 2025 Nexora Learning Platform. All rights reserved.
                 </div>
             </div>
-        </footer>
-    </div>
+        </section>
 
-    <script>
-        // Configuration
-        const CONFIG = {
-            API_KEY: 'AIzaSyDzdiDMtiY250DS-lDuZeIZOocw9oqMlhM',
-            SPREADSHEET_ID: '1XFR_1XAV5rHr6Sbmc9wqy363UjzZqb_7i4fPBRQcxBE'
-        };
-
-        // Global variables
-        let userData = {
-            gender: null,
-            theme: null,
-            progress: {}
-        };
-
-        // DOM Elements
-        const welcomeScreen = document.getElementById('welcomeScreen');
-        const mainWebsite = document.getElementById('mainWebsite');
-        const genderBtns = document.querySelectorAll('.gender-btn');
-        const themeSelection = document.getElementById('themeSelection');
-        const themeBtns = document.querySelectorAll('.theme-btn');
-        const startBtn = document.getElementById('startBtn');
-        const themeToggle = document.getElementById('themeToggle');
-        const navLinks = document.querySelectorAll('.nav-link');
-        const pages = document.querySelectorAll('.page');
-
-        // Initialize the application
-        function init() {
-            // Check if user data exists in localStorage
-            const savedUserData = localStorage.getItem('nexoraUserData');
-            if (savedUserData) {
-                userData = JSON.parse(savedUserData);
-                applyTheme(userData.theme);
-                showMainWebsite();
-            } else {
-                // Show welcome screen
-                welcomeScreen.classList.remove('hidden');
-            }
-
-            // Set up event listeners
-            setupEventListeners();
+        <!-- Course Content Page -->
+        <section id="courseContentPage" class="page">
+            <div class="course-header">
+                <div class="container">
+                    <h1 id="courseContentTitle" style="margin-bottom: 15px;">Course Title</h1>
+                    <p id="courseContentDesc" style="max-width: 600px; margin: 0 auto; color: #ccc;">Course description will appear here</p>
+                </div>
+            </div>
             
-            // Load data from Google Sheets
-            loadDataFromSheets();
-        }
-
-        // Set up event listeners
-        function setupEventListeners() {
-            // Gender selection
-            genderBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const gender = this.getAttribute('data-gender');
-                    userData.gender = gender;
-                    
-                    // Show appropriate theme options
-                    themeSelection.style.display = 'flex';
-                    themeBtns.forEach(themeBtn => {
-                        if (themeBtn.getAttribute('data-theme').startsWith(gender)) {
-                            themeBtn.style.display = 'block';
-                        } else {
-                            themeBtn.style.display = 'none';
-                        }
-                    });
-                    
-                    // Select first theme by default
-                    const firstTheme = document.querySelector(`.theme-btn[data-theme^="${gender}"]`);
-                    if (firstTheme) {
-                        firstTheme.click();
-                    }
-                    
-                    startBtn.style.display = 'block';
-                });
-            });
-
-            // Theme selection
-            themeBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    themeBtns.forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    userData.theme = this.getAttribute('data-theme');
-                });
-            });
-
-            // Start button
-            startBtn.addEventListener('click', function() {
-                // Save user data to localStorage
-                localStorage.setItem('nexoraUserData', JSON.stringify(userData));
-                
-                // Apply theme and show main website
-                applyTheme(userData.theme);
-                showMainWebsite();
-            });
-
-            // Theme toggle in header
-            themeToggle.addEventListener('click', function() {
-                // Cycle through themes for the current gender
-                const currentGender = userData.gender;
-                const currentTheme = userData.theme;
-                const genderThemes = Array.from(themeBtns)
-                    .filter(btn => btn.getAttribute('data-theme').startsWith(currentGender))
-                    .map(btn => btn.getAttribute('data-theme'));
-                
-                const currentIndex = genderThemes.indexOf(currentTheme);
-                const nextIndex = (currentIndex + 1) % genderThemes.length;
-                const nextTheme = genderThemes[nextIndex];
-                
-                userData.theme = nextTheme;
-                applyTheme(nextTheme);
-                localStorage.setItem('nexoraUserData', JSON.stringify(userData));
-            });
-
-            // Navigation
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const page = this.getAttribute('data-page');
-                    
-                    // Update active nav link
-                    navLinks.forEach(l => l.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Show selected page
-                    pages.forEach(p => p.classList.remove('active'));
-                    document.getElementById(page).classList.add('active');
-                });
-            });
-
-            // Page links in footer
-            document.querySelectorAll('.footer-links a[data-page]').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const page = this.getAttribute('data-page');
-                    
-                    // Update active nav link
-                    navLinks.forEach(l => l.classList.remove('active'));
-                    document.querySelector(`.nav-link[data-page="${page}"]`).classList.add('active');
-                    
-                    // Show selected page
-                    pages.forEach(p => p.classList.remove('active'));
-                    document.getElementById(page).classList.add('active');
-                });
-            });
-        }
-
-        // Apply theme to the website
-        function applyTheme(theme) {
-            // Remove all theme classes
-            document.body.classList.remove('theme-boy-1', 'theme-boy-2', 'theme-girl-1', 'theme-girl-2');
-            
-            // Add the selected theme class
-            document.body.classList.add(`theme-${theme}`);
-            
-            // Update theme buttons active state
-            themeBtns.forEach(btn => {
-                if (btn.getAttribute('data-theme') === theme) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-        }
-
-        // Show main website and hide welcome screen
-        function showMainWebsite() {
-            welcomeScreen.classList.add('hidden');
-            setTimeout(() => {
-                welcomeScreen.style.display = 'none';
-                mainWebsite.style.display = 'block';
-            }, 800);
-        }
-
-        // Load data from Google Sheets
-        function loadDataFromSheets() {
-            // In a real implementation, we would fetch data from Google Sheets API
-            // For this demo, we'll use mock data
-            
-            // Mock courses data
-            const courses = [
-                {
-                    id: 1,
-                    title: "Advanced Physics - Mechanics",
-                    teacher: "Dr. Darshana Ukuwela",
-                    subject: "Physics",
-                    thumbnail: "https://via.placeholder.com/300x180/6a11cb/ffffff?text=Physics",
-                    description: "Master the fundamentals of mechanics with practical examples and problem-solving techniques."
-                },
-                {
-                    id: 2,
-                    title: "Organic Chemistry Fundamentals",
-                    teacher: "Dr. Samantha Perera",
-                    subject: "Chemistry",
-                    thumbnail: "https://via.placeholder.com/300x180/2575fc/ffffff?text=Chemistry",
-                    description: "Explore the world of organic compounds, reactions, and molecular structures."
-                },
-                {
-                    id: 3,
-                    title: "Biology - Genetics and Evolution",
-                    teacher: "Prof. James Fernando",
-                    subject: "Biology",
-                    thumbnail: "https://via.placeholder.com/300x180/ff4da6/ffffff?text=Biology",
-                    description: "Dive into the principles of genetics, DNA, and evolutionary biology."
-                },
-                {
-                    id: 4,
-                    title: "Advanced Mathematics - Calculus",
-                    teacher: "Dr. Darshana Ukuwela",
-                    subject: "Mathematics",
-                    thumbnail: "https://via.placeholder.com/300x180/00d4ff/ffffff?text=Mathematics",
-                    description: "Understand differential and integral calculus with real-world applications."
-                }
-            ];
-
-            // Mock tutors data
-            const tutors = [
-                {
-                    id: 1,
-                    name: "Dr. Darshana Ukuwela",
-                    bio: "PhD in Physics with 15 years of teaching experience. Specialized in mechanics and astrophysics.",
-                    photo: "https://via.placeholder.com/280x200/6a11cb/ffffff?text=Dr.+Darshana",
-                    website: "https://darshanaukuwela.com"
-                },
-                {
-                    id: 2,
-                    name: "Dr. Samantha Perera",
-                    bio: "Chemistry expert with research background in organic synthesis and pharmaceutical chemistry.",
-                    photo: "https://via.placeholder.com/280x200/2575fc/ffffff?text=Dr.+Samantha",
-                    website: "https://samanthaperera.com"
-                },
-                {
-                    id: 3,
-                    name: "Prof. James Fernando",
-                    bio: "Renowned biologist and author of several textbooks on genetics and evolutionary biology.",
-                    photo: "https://via.placeholder.com/280x200/ff4da6/ffffff?text=Prof.+James",
-                    website: "https://jamesfernando.com"
-                }
-            ];
-
-            // Populate courses
-            const coursesGrids = document.querySelectorAll('.courses-grid');
-            courses.forEach(course => {
-                const courseCard = createCourseCard(course);
-                coursesGrids.forEach(grid => {
-                    if (!grid.classList.contains('tutors-grid')) {
-                        grid.appendChild(courseCard.cloneNode(true));
-                    }
-                });
-            });
-
-            // Populate tutors
-            const tutorsGrid = document.querySelector('.tutors-grid');
-            tutors.forEach(tutor => {
-                const tutorCard = createTutorCard(tutor);
-                tutorsGrid.appendChild(tutorCard);
-            });
-        }
-
-        // Create course card element
-        function createCourseCard(course) {
-            const card = document.createElement('div');
-            card.className = 'course-card';
-            card.innerHTML = `
-                <img src="${course.thumbnail}" alt="${course.title}" class="course-thumbnail">
+            <div class="container">
                 <div class="course-info">
-                    <h3 class="course-title">${course.title}</h3>
-                    <div class="course-meta">
-                        <span>${course.teacher}</span>
-                        <span>${course.subject}</span>
+                    <div class="course-details">
+                        <h2 style="margin-bottom: 20px; color: var(--accent);">Course Content</h2>
+                        <div class="lessons-list">
+                            <!-- Lessons will be populated by JavaScript -->
+                        </div>
                     </div>
-                    <p class="course-description">${course.description}</p>
-                    <button class="enroll-btn">Enroll Now</button>
-                </div>
-            `;
-            
-            // Add event listener to enroll button
-            card.querySelector('.enroll-btn').addEventListener('click', function() {
-                alert(`Enrolled in ${course.title}!`);
-                // In a real implementation, this would track user progress
-            });
-            
-            return card;
-        }
-
-        // Create tutor card element
-        function createTutorCard(tutor) {
-            const card = document.createElement('div');
-            card.className = 'tutor-card';
-            card.innerHTML = `
-                <img src="${tutor.photo}" alt="${tutor.name}" class="tutor-photo">
-                <div class="tutor-info">
-                    <h3 class="tutor-name">${tutor.name}</h3>
-                    <p class="tutor-bio">${tutor.bio}</p>
-                    <div class="tutor-actions">
-                        <button class="tutor-btn website-btn">Website</button>
-                        <button class="tutor-btn courses-btn">Courses</button>
+                    
+                    <div class="teacher-info">
+                        <div class="tutor-photo" id="teacherPhoto">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3 id="teacherName" class="tutor-name">Teacher Name</h3>
+                        <p id="teacherBio" class="tutor-bio">Teacher bio will appear here</p>
+                        <div class="tutor-actions">
+                            <button class="btn btn-outline" style="padding: 8px 15px;"><i class="fas fa-globe"></i></button>
+                            <button class="btn btn-primary">View Courses</button>
+                        </div>
                     </div>
                 </div>
-            `;
-            
-            // Add event listeners to buttons
-            card.querySelector('.website-btn').addEventListener('click', function() {
-                window.open(tutor.website, '_blank');
-            });
-            
-            card.querySelector('.courses-btn').addEventListener('click', function() {
-                // Filter and show courses by this tutor
-                alert(`Showing courses by ${tutor.name}`);
-                // In a real implementation, this would filter the courses page
-            });
-            
-            return card;
-        }
+                
+                <div style="margin-top: 60px;">
+                    <h2 style="margin-bottom: 20px; color: var(--accent);">More from this Teacher</h2>
+                    <div class="courses-grid">
+                        <!-- Related courses will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-        // Initialize the application when DOM is loaded
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Nexora</h3>
+                    <p>Free 2025 Advanced Level Science Video Platform for students aged 17-23.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#" data-page="home">Home</a></li>
+                        <li><a href="#" data-page="courses">Courses</a></li>
+                        <li><a href="#" data-page="tutors">Tutors</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Subjects</h3>
+                    <ul>
+                        <li><a href="#">Physics</a></li>
+                        <li><a href="#">Chemistry</a></li>
+                        <li><a href="#">Biology</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <ul>
+                        <li><a href="mailto:info@nexora.com">info@nexora.com</a></li>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Feedback</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 Nexora Learning Platform. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
