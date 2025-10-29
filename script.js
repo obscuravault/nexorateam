@@ -1,398 +1,376 @@
 // script.js
-let data = [];
-let tutorsData = [];
-let player = null;
-let ytScriptLoaded = false;
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize the application
+    initApp();
+});
 
-async function fetchData() {
-    if (data.length > 0) return data;
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SPREADSHEET_ID}/values/Sheet1!A2:H?key=${CONFIG.API_KEY}`;
-    const response = await fetch(url);
-    const json = await response.json();
-    data = json.values ? json.values.map(row => ({
-        teacherId: row[0],
-        courseType: row[1],
-        subject: row[2],
-        lesson: row[3],
-        subLesson: row[4],
-        subLessonPart: row[5],
-        videoLink: row[6],
-        thumbnail: row[7] || 'https://via.placeholder.com/300x200'
-    })) : [];
-    return data;
+function initApp() {
+    // Check if user has already selected gender and theme
+    const userGender = localStorage.getItem('nexoraGender');
+    const userTheme = localStorage.getItem('nexoraTheme');
+    
+    if (!userGender || !userTheme) {
+        // Show gender selection modal
+        showGenderModal();
+    } else {
+        // Apply saved theme
+        applyTheme(userGender, userTheme);
+        
+        // Load last studied data if exists
+        loadLastStudied();
+    }
+    
+    // Set up event listeners
+    setupEventListeners();
+    
+    // Load initial data
+    loadInitialData();
 }
 
-async function fetchTutors() {
-    if (tutorsData.length > 0) return tutorsData;
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SPREADSHEET_ID}/values/tutors!A2:E?key=${CONFIG.API_KEY}`;
-    const response = await fetch(url);
-    const json = await response.json();
-    tutorsData = json.values ? json.values.map(row => ({
-        id: row[0],
-        name: row[1],
-        bio: row[2],
-        photo: row[3] || 'https://via.placeholder.com/150',
-        website: row[4]
-    })) : [];
-    return tutorsData;
-}
-
-function getTutorById(id) {
-    return tutorsData.find(t => t.id === id) || {name: 'Unknown', photo: 'https://via.placeholder.com/150', website: '#'};
-}
-
-function getUniqueSubjects() {
-    const subjects = new Set(data.map(item => item.subject));
-    return Array.from(subjects);
-}
-
-function getUniqueCourseTypes() {
-    const types = new Set(data.map(item => item.courseType));
-    return Array.from(types);
-}
-
-function getUniqueTeachers() {
-    return tutorsData;
-}
-
-function groupBySubject(subject) {
-    const filtered = data.filter(item => item.subject === subject);
-    const grouped = filtered.reduce((acc, item) => {
-        if (!acc[item.lesson]) acc[item.lesson] = {};
-        if (!acc[item.lesson][item.subLesson]) acc[item.lesson][item.subLesson] = [];
-        acc[item.lesson][item.subLesson].push(item);
-        return acc;
-    }, {});
-    return grouped;
-}
-
-function getVideoId(url) {
-    const match = url.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/);
-    return match ? match[1] : null;
-}
-
-function loadYouTubeAPI() {
-    if (ytScriptLoaded) return;
-    const tag = document.createElement('script');
-    tag.src = 'https://www.youtube.com/iframe_api';
-    const firstScript = document.getElementsByTagName('script')[0];
-    firstScript.parentNode.insertBefore(tag, firstScript);
-    ytScriptLoaded = true;
-}
-
-window.onYouTubeIframeAPIReady = function() {};
-
-function createPlayer(videoId) {
-    if (player) player.destroy();
-    player = new YT.Player('player', {
-        height: '100%',
-        width: '100%',
-        videoId: videoId,
-        playerVars: {
-            'controls': 0,
-            'modestbranding': 1,
-            'rel': 0,
-            'fs': 0,
-            'showinfo': 0
-        },
-        events: {
-            'onReady': onPlayerReady
-        }
-    });
-}
-
-function onPlayerReady(event) {
-    document.getElementById('custom-controls').style.display = 'block';
-    document.getElementById('play-btn').onclick = () => player.playVideo();
-    document.getElementById('pause-btn').onclick = () => player.pauseVideo();
-}
-
-async function loadTutors() {
-    await fetchTutors();
-    const list = document.getElementById('tutors-list');
-    tutorsData.forEach(tutor => {
-        const col = document.createElement('div');
-        col.className = 'col-md-4 mb-3';
-        col.innerHTML = `
-            <div class="card">
-                <img src="${tutor.photo}" class="card-img-top" alt="${tutor.name}">
-                <div class="card-body">
-                    <h5 class="card-title">${tutor.name}</h5>
-                    <p class="card-text">${tutor.bio || 'Expert tutor in advanced level subjects.'}</p>
-                    <a href="${tutor.website}" class="btn btn-primary" target="_blank">Website</a>
-                    <a href="courses.html?teacher=${tutor.id}" class="btn btn-secondary">Courses</a>
-                </div>
-            </div>
-        `;
-        list.appendChild(col);
-    });
-}
-
-async function loadCourses() {
-    await fetchData();
-    await fetchTutors();
-    const subjects = getUniqueSubjects();
-    const courseTypes = getUniqueCourseTypes();
-    const teachers = getUniqueTeachers();
-
-    const subjectFilter = document.getElementById('subject-filter');
-    subjects.forEach(sub => {
-        const option = document.createElement('option');
-        option.value = sub;
-        option.textContent = sub;
-        subjectFilter.appendChild(option);
-    });
-
-    const teacherFilter = document.getElementById('teacher-filter');
-    teachers.forEach(t => {
-        const option = document.createElement('option');
-        option.value = t.id;
-        option.textContent = t.name;
-        teacherFilter.appendChild(option);
-    });
-
-    const courseTypeFilter = document.getElementById('coursetype-filter');
-    courseTypes.forEach(type => {
-        const option = document.createElement('option');
-        option.value = type;
-        option.textContent = type;
-        courseTypeFilter.appendChild(option);
-    });
-
-    const params = new URLSearchParams(window.location.search);
-    const selectedTeacher = params.get('teacher') || '';
-
-    function displayCourses(filters = {}) {
-        const list = document.getElementById('courses-list');
-        list.innerHTML = '';
-        let filteredData = data;
-        if (filters.subject) filteredData = filteredData.filter(d => d.subject === filters.subject);
-        if (filters.teacher) filteredData = filteredData.filter(d => d.teacherId === filters.teacher);
-        if (filters.courseType) filteredData = filteredData.filter(d => d.courseType === filters.courseType);
-        if (filters.search) {
-            const searchLower = filters.search.toLowerCase();
-            filteredData = filteredData.filter(d => d.subject.toLowerCase().includes(searchLower) || d.lesson.toLowerCase().includes(searchLower));
-        }
-
-        const uniqueSubjects = [...new Set(filteredData.map(d => d.subject))];
-        uniqueSubjects.forEach(sub => {
-            const courseData = filteredData.find(d => d.subject === sub);
-            const thumbnail = courseData.thumbnail;
-            const teacherName = getTutorById(courseData.teacherId).name;
-            const col = document.createElement('div');
-            col.className = 'col-md-4 mb-3';
-            col.innerHTML = `
-                <div class="card">
-                    <img src="${thumbnail}" class="card-img-top" alt="${sub}">
-                    <div class="card-body">
-                        <h5 class="card-title">${sub}</h5>
-                        <p class="card-text">Type: ${courseData.courseType} | Teacher: ${teacherName}</p>
-                        <a href="course-content.html?subject=${encodeURIComponent(sub)}" class="btn btn-primary">View Course</a>
-                    </div>
-                </div>
-            `;
-            list.appendChild(col);
+function showGenderModal() {
+    const modal = document.getElementById('genderModal');
+    modal.style.display = 'block';
+    
+    // Set up gender selection
+    const genderOptions = document.querySelectorAll('.gender-option');
+    genderOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            const gender = this.getAttribute('data-gender');
+            showThemeOptions(gender);
         });
-    }
-
-    displayCourses({teacher: selectedTeacher});
-
-    subjectFilter.addEventListener('change', (e) => displayCourses({
-        subject: e.target.value,
-        teacher: teacherFilter.value,
-        courseType: courseTypeFilter.value,
-        search: searchInput.value
-    }));
-    teacherFilter.addEventListener('change', (e) => displayCourses({
-        subject: subjectFilter.value,
-        teacher: e.target.value,
-        courseType: courseTypeFilter.value,
-        search: searchInput.value
-    }));
-    courseTypeFilter.addEventListener('change', (e) => displayCourses({
-        subject: subjectFilter.value,
-        teacher: teacherFilter.value,
-        courseType: e.target.value,
-        search: searchInput.value
-    }));
-
-    const searchInput = document.getElementById('search-input');
-    searchInput.addEventListener('input', (e) => displayCourses({
-        subject: subjectFilter.value,
-        teacher: teacherFilter.value,
-        courseType: courseTypeFilter.value,
-        search: e.target.value
-    }));
-
-    const gridBtn = document.getElementById('grid-view');
-    const listBtn = document.getElementById('list-view');
-    gridBtn.addEventListener('click', () => {
-        list.classList.add('grid-view');
-        list.classList.remove('list-view');
-    });
-    listBtn.addEventListener('click', () => {
-        list.classList.add('list-view');
-        list.classList.remove('grid-view');
     });
 }
 
-async function loadCourseContent() {
-    await fetchData();
-    await fetchTutors();
-    const params = new URLSearchParams(window.location.search);
-    const subject = params.get('subject');
-    if (!subject) {
-        document.getElementById('course-title').textContent = 'No course selected';
-        return;
-    }
-    document.getElementById('course-title').textContent = subject;
-    const courseData = data.find(d => d.subject === subject);
-    if (!courseData) return;
-    const teacher = getTutorById(courseData.teacherId);
-    document.getElementById('teacher-photo').src = teacher.photo;
-    document.getElementById('teacher-name').textContent = teacher.name;
-    document.getElementById('course-desc').textContent = `Explore advanced topics in ${subject}. Ideal for 2025 A/L preparation.`;
-
-    document.getElementById('enroll-btn').addEventListener('click', () => alert(`Enrolled in ${subject}!`));
-
-    const grouped = groupBySubject(subject);
-    const accordion = document.getElementById('course-content');
-    let index = 0;
-    for (const lesson in grouped) {
-        const lessonId = `lesson${index}`;
-        const subAccordion = document.createElement('div');
-        subAccordion.className = 'accordion accordion-flush';
-        let subIndex = 0;
-        for (const subLesson in grouped[lesson]) {
-            const subId = `${lessonId}-sub${subIndex}`;
-            const parts = grouped[lesson][subLesson];
-            const partsList = parts.map(part => `
-                <li class="list-group-item d-flex align-items-center">
-                    <img src="${part.thumbnail}" alt="${part.subLessonPart}" style="width: 100px; height: 60px; margin-right: 10px;">
-                    <a href="video-player.html?videoLink=${encodeURIComponent(part.videoLink)}&subject=${encodeURIComponent(subject)}" class="flex-grow-1">${part.subLessonPart}</a>
-                </li>
-            `).join('');
-            subAccordion.innerHTML += `
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${subId}">
-                            ${subLesson}
-                        </button>
-                    </h2>
-                    <div id="collapse-${subId}" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            <ul class="list-group">${partsList}</ul>
-                        </div>
-                    </div>
-                </div>
-            `;
-            subIndex++;
+function showThemeOptions(gender) {
+    const themeOptions = document.getElementById('themeOptions');
+    const confirmButton = document.getElementById('confirmTheme');
+    
+    // Clear previous options
+    themeOptions.innerHTML = '';
+    
+    // Create theme options based on gender
+    const themes = gender === 'boy' ? 
+        ['boy-theme-1', 'boy-theme-2', 'boy-theme-3', 'boy-theme-4'] : 
+        ['girl-theme-1', 'girl-theme-2', 'girl-theme-3', 'girl-theme-4'];
+    
+    const themeNames = gender === 'boy' ? 
+        ['Blue Ocean', 'Emerald Forest', 'Purple Nebula', 'Crimson Blaze'] : 
+        ['Pink Bloom', 'Violet Dream', 'Teal Harmony', 'Orange Sunset'];
+    
+    themes.forEach((theme, index) => {
+        const themeOption = document.createElement('div');
+        themeOption.className = 'theme-option';
+        themeOption.setAttribute('data-theme', theme);
+        
+        // Create color swatch based on theme
+        let gradient = '';
+        if (theme === 'boy-theme-1') gradient = 'linear-gradient(to right, #0d47a1, #42a5f5)';
+        else if (theme === 'boy-theme-2') gradient = 'linear-gradient(to right, #00695c, #4db6ac)';
+        else if (theme === 'boy-theme-3') gradient = 'linear-gradient(to right, #4a148c, #ba68c8)';
+        else if (theme === 'boy-theme-4') gradient = 'linear-gradient(to right, #b71c1c, #f44336)';
+        else if (theme === 'girl-theme-1') gradient = 'linear-gradient(to right, #880e4f, #f06292)';
+        else if (theme === 'girl-theme-2') gradient = 'linear-gradient(to right, #4a148c, #b388ff)';
+        else if (theme === 'girl-theme-3') gradient = 'linear-gradient(to right, #00695c, #80cbc4)';
+        else if (theme === 'girl-theme-4') gradient = 'linear-gradient(to right, #e65100, #ffcc80)';
+        
+        themeOption.innerHTML = `
+            <div class="color-swatch" style="background: ${gradient};"></div>
+            <span>${themeNames[index]}</span>
+        `;
+        
+        themeOption.addEventListener('click', function() {
+            // Remove selected class from all options
+            document.querySelectorAll('.theme-option').forEach(opt => {
+                opt.style.borderColor = 'transparent';
+            });
+            
+            // Add selected class to current option
+            this.style.borderColor = 'var(--accent)';
+            
+            // Enable confirm button
+            confirmButton.style.display = 'inline-block';
+            
+            // Store selected theme temporarily
+            this.selectedTheme = theme;
+            this.selectedGender = gender;
+        });
+        
+        themeOptions.appendChild(themeOption);
+    });
+    
+    // Show theme options
+    themeOptions.style.display = 'grid';
+    
+    // Set up confirm button
+    confirmButton.onclick = function() {
+        const selectedOption = document.querySelector('.theme-option[style*="border-color"]');
+        if (selectedOption) {
+            const theme = selectedOption.selectedTheme;
+            const gender = selectedOption.selectedGender;
+            
+            // Save to localStorage
+            localStorage.setItem('nexoraGender', gender);
+            localStorage.setItem('nexoraTheme', theme);
+            
+            // Apply theme
+            applyTheme(gender, theme);
+            
+            // Hide modal
+            document.getElementById('genderModal').style.display = 'none';
         }
-        const item = document.createElement('div');
-        item.className = 'accordion-item';
-        item.innerHTML = `
-            <h2 class="accordion-header">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${lessonId}" aria-expanded="true">
-                    ${lesson}
-                </button>
-            </h2>
-            <div id="collapse-${lessonId}" class="accordion-collapse collapse show">
-                <div class="accordion-body">
-                    ${subAccordion.innerHTML}
-                </div>
-            </div>
-        `;
-        accordion.appendChild(item);
-        index++;
+    };
+}
+
+function applyTheme(gender, theme) {
+    // Remove any existing theme classes
+    document.body.classList.remove(
+        'boy-theme-1', 'boy-theme-2', 'boy-theme-3', 'boy-theme-4',
+        'girl-theme-1', 'girl-theme-2', 'girl-theme-3', 'girl-theme-4'
+    );
+    
+    // Add the selected theme class
+    document.body.classList.add(theme);
+}
+
+function setupEventListeners() {
+    // Navigation
+    const navLinks = document.querySelectorAll('nav a, .hero-buttons a, .footer-section a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const page = this.getAttribute('data-page');
+            if (page) {
+                showPage(page);
+            }
+        });
+    });
+    
+    // Theme toggle
+    document.getElementById('themeToggle').addEventListener('click', function() {
+        showGenderModal();
+    });
+}
+
+function showPage(pageName) {
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+    });
+    
+    // Remove active class from all nav links
+    document.querySelectorAll('nav a').forEach(link => {
+        link.classList.remove('active');
+    });
+    
+    // Show selected page
+    document.getElementById(pageName + 'Page').classList.add('active');
+    
+    // Add active class to corresponding nav link
+    document.querySelector(`nav a[data-page="${pageName}"]`).classList.add('active');
+    
+    // Load page-specific content
+    if (pageName === 'courses') {
+        loadCoursesPage();
+    } else if (pageName === 'tutors') {
+        loadTutorsPage();
+    } else if (pageName === 'home') {
+        loadHomePage();
     }
+}
 
-    // Related courses by teacher
-    const relatedList = document.getElementById('related-list');
-    const otherSubjects = [...new Set(data.filter(d => d.teacherId === courseData.teacherId && d.subject !== subject).map(d => d.subject))];
-    otherSubjects.forEach(sub => {
-        const relData = data.find(d => d.subject === sub);
-        const col = document.createElement('div');
-        col.className = 'col-md-4 mb-3';
-        col.innerHTML = `
-            <div class="card">
-                <img src="${relData.thumbnail}" class="card-img-top" alt="${sub}">
-                <div class="card-body">
-                    <h5 class="card-title">${sub}</h5>
-                    <a href="course-content.html?subject=${encodeURIComponent(sub)}" class="btn btn-primary">View Course</a>
+function loadInitialData() {
+    // Load featured courses for home page
+    loadFeaturedCourses();
+    
+    // Load tutors for home page
+    loadFeaturedTutors();
+}
+
+function loadFeaturedCourses() {
+    // In a real implementation, this would fetch from Google Sheets
+    // For now, we'll use mock data
+    
+    const courses = [
+        {
+            id: 1,
+            title: 'Quantum Mechanics Fundamentals',
+            subject: 'Physics',
+            teacher: 'Dr. Darshana Ukuwela',
+            thumbnail: 'physics',
+            description: 'Explore the fascinating world of quantum physics and its applications.'
+        },
+        {
+            id: 2,
+            title: 'Organic Chemistry Reactions',
+            subject: 'Chemistry',
+            teacher: 'Prof. Anura Perera',
+            thumbnail: 'chemistry',
+            description: 'Master the key reactions in organic chemistry with practical examples.'
+        },
+        {
+            id: 3,
+            title: 'Cell Biology & Genetics',
+            subject: 'Biology',
+            teacher: 'Dr. Nirmali Fernando',
+            thumbnail: 'biology',
+            description: 'Dive deep into cellular structures and genetic inheritance patterns.'
+        }
+    ];
+    
+    const coursesGrid = document.querySelector('#homePage .courses-grid');
+    coursesGrid.innerHTML = '';
+    
+    courses.forEach(course => {
+        const courseCard = document.createElement('div');
+        courseCard.className = 'course-card';
+        courseCard.innerHTML = `
+            <div class="course-thumbnail" style="background: linear-gradient(to right, var(--primary), var(--secondary));">
+                <i class="fas fa-${course.thumbnail}" style="font-size: 3rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white;"></i>
+            </div>
+            <div class="course-content">
+                <h3>${course.title}</h3>
+                <p>${course.description}</p>
+                <div class="course-meta">
+                    <span><i class="fas fa-book"></i> ${course.subject}</span>
+                    <span><i class="fas fa-user"></i> ${course.teacher}</span>
                 </div>
+                <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="showPage('courseContent')">View Course</button>
             </div>
         `;
-        relatedList.appendChild(col);
+        coursesGrid.appendChild(courseCard);
     });
 }
 
-async function loadVideoPlayer() {
-    loadYouTubeAPI();
-    await fetchData();
-    const params = new URLSearchParams(window.location.search);
-    const videoLink = params.get('videoLink');
-    const subject = params.get('subject');
-    if (!videoLink || !subject) {
-        document.getElementById('video-title').textContent = 'No video selected';
-        return;
+function loadFeaturedTutors() {
+    // In a real implementation, this would fetch from Google Sheets
+    // For now, we'll use mock data
+    
+    const tutors = [
+        {
+            id: 1,
+            name: 'Dr. Darshana Ukuwela',
+            bio: 'PhD in Physics with 15 years of teaching experience',
+            photo: 'user',
+            website: 'https://example.com'
+        },
+        {
+            id: 2,
+            name: 'Prof. Anura Perera',
+            bio: 'Senior Chemistry lecturer and researcher',
+            photo: 'user',
+            website: 'https://example.com'
+        },
+        {
+            id: 3,
+            name: 'Dr. Nirmali Fernando',
+            bio: 'Award-winning Biology educator',
+            photo: 'user',
+            website: 'https://example.com'
+        }
+    ];
+    
+    // This would be used on the tutors page
+}
+
+function loadCoursesPage() {
+    // Similar to loadFeaturedCourses but with more courses
+    const coursesGrid = document.querySelector('#coursesPage .courses-grid');
+    
+    // In a real implementation, this would fetch from Google Sheets
+    // For now, we'll use the same mock data
+    loadFeaturedCourses(); // Reuse the function for demo
+}
+
+function loadTutorsPage() {
+    const tutorsGrid = document.querySelector('#tutorsPage .tutors-grid');
+    
+    // In a real implementation, this would fetch from Google Sheets
+    // For now, we'll use mock data
+    
+    const tutors = [
+        {
+            id: 1,
+            name: 'Dr. Darshana Ukuwela',
+            bio: 'PhD in Physics with 15 years of teaching experience. Specialized in Quantum Mechanics and Relativity.',
+            photo: 'user',
+            website: 'https://example.com'
+        },
+        {
+            id: 2,
+            name: 'Prof. Anura Perera',
+            bio: 'Senior Chemistry lecturer and researcher with publications in international journals.',
+            photo: 'user',
+            website: 'https://example.com'
+        },
+        {
+            id: 3,
+            name: 'Dr. Nirmali Fernando',
+            bio: 'Award-winning Biology educator with a focus on molecular biology and genetics.',
+            photo: 'user',
+            website: 'https://example.com'
+        },
+        {
+            id: 4,
+            name: 'Dr. Sanjaya Rathnayake',
+            bio: 'Physics researcher with expertise in electromagnetism and thermodynamics.',
+            photo: 'user',
+            website: 'https://example.com'
+        }
+    ];
+    
+    tutorsGrid.innerHTML = '';
+    
+    tutors.forEach(tutor => {
+        const tutorCard = document.createElement('div');
+        tutorCard.className = 'tutor-card';
+        tutorCard.innerHTML = `
+            <div class="tutor-photo">
+                <i class="fas fa-${tutor.photo}"></i>
+            </div>
+            <h3 class="tutor-name">${tutor.name}</h3>
+            <p class="tutor-bio">${tutor.bio}</p>
+            <div class="tutor-actions">
+                <button class="btn btn-outline"><i class="fas fa-globe"></i> Website</button>
+                <button class="btn btn-primary">View Courses</button>
+            </div>
+        `;
+        tutorsGrid.appendChild(tutorCard);
+    });
+}
+
+function loadLastStudied() {
+    // Load the last studied lesson from localStorage
+    const lastStudied = localStorage.getItem('nexoraLastStudied');
+    if (lastStudied) {
+        // In a real implementation, this would update the UI to show progress
+        console.log('Last studied:', JSON.parse(lastStudied));
     }
-    const currentItem = data.find(d => d.videoLink === videoLink && d.subject === subject);
-    if (!currentItem) return;
-    document.getElementById('video-title').textContent = currentItem.subLessonPart;
-
-    createPlayer(getVideoId(videoLink));
-
-    // Next videos
-    const subjectData = data.filter(d => d.subject === subject);
-    const currentIndex = subjectData.findIndex(d => d.videoLink === videoLink);
-    const nextVideos = subjectData.slice(currentIndex + 1);
-    const nextList = document.getElementById('next-list');
-    nextVideos.forEach(video => {
-        const col = document.createElement('div');
-        col.className = 'col-md-4 mb-3';
-        col.innerHTML = `
-            <div class="card">
-                <img src="${video.thumbnail}" class="card-img-top" alt="${video.subLessonPart}">
-                <div class="card-body">
-                    <h5 class="card-title">${video.subLessonPart}</h5>
-                    <a href="video-player.html?videoLink=${encodeURIComponent(video.videoLink)}&subject=${encodeURIComponent(subject)}" class="btn btn-primary">Watch Next</a>
-                </div>
-            </div>
-        `;
-        nextList.appendChild(col);
-    });
 }
 
-async function loadFeatured() {
-    await fetchData();
-    const subjects = getUniqueSubjects().slice(0, 3);
-    const list = document.getElementById('featured-list');
-    subjects.forEach(sub => {
-        const courseData = data.find(d => d.subject === sub);
-        const thumbnail = courseData.thumbnail;
-        const col = document.createElement('div');
-        col.className = 'col-md-4 mb-3';
-        col.innerHTML = `
-            <div class="card">
-                <img src="${thumbnail}" class="card-img-top" alt="${sub}">
-                <div class="card-body">
-                    <h5 class="card-title">${sub}</h5>
-                    <a href="course-content.html?subject=${encodeURIComponent(sub)}" class="btn btn-primary">View Course</a>
-                </div>
-            </div>
-        `;
-        list.appendChild(col);
-    });
+function updateLastStudied(lessonData) {
+    // Save the current lesson to localStorage
+    localStorage.setItem('nexoraLastStudied', JSON.stringify(lessonData));
 }
 
-function initTheme() {
-    const select = document.getElementById('theme-select');
-    const savedTheme = localStorage.getItem('theme') || 'default';
-    select.value = savedTheme;
-    document.body.classList.add(`theme-${savedTheme}`);
-    select.addEventListener('change', (e) => {
-        document.body.classList.remove('theme-default', 'theme-bw', 'theme-greenwhite', 'theme-purplegold', 'theme-redblack');
-        document.body.classList.add(`theme-${e.target.value}`);
-        localStorage.setItem('theme', e.target.value);
+// Google Sheets integration functions (simplified for demo)
+function fetchSheetData(sheetName) {
+    // In a real implementation, this would use the Google Sheets API
+    // For now, we'll return mock data
+    
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            if (sheetName === 'Sheet1') {
+                resolve([
+                    ['1', 'Physics', 'Quantum Mechanics', 'Introduction', 'Wave-Particle Duality', 'Part 1', 'https://www.youtube.com/embed/dQw4w9WgXcQ', 'https://example.com/thumb1.jpg'],
+                    ['1', 'Physics', 'Quantum Mechanics', 'Introduction', 'Wave-Particle Duality', 'Part 2', 'https://www.youtube.com/embed/dQw4w9WgXcQ', 'https://example.com/thumb2.jpg'],
+                    ['2', 'Chemistry', 'Organic Chemistry', 'Hydrocarbons', 'Alkanes', 'Part 1', 'https://www.youtube.com/embed/dQw4w9WgXcQ', 'https://example.com/thumb3.jpg']
+                ]);
+            } else if (sheetName === 'tutors') {
+                resolve([
+                    ['1', 'Dr. Darshana Ukuwela', 'PhD in Physics with 15 years of teaching experience', 'https://example.com/photo1.jpg', 'https://example.com'],
+                    ['2', 'Prof. Anura Perera', 'Senior Chemistry lecturer and researcher', 'https://example.com/photo2.jpg', 'https://example.com']
+                ]);
+            }
+        }, 500);
     });
 }
