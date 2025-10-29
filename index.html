@@ -1,68 +1,1174 @@
-<!-- index.html (Home Page) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexora Learning Platform - Home</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <title>Nexora Learning Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* Default colors (will be changed based on gender/theme) */
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --accent: #ff4da6;
+            --background: #0f0c29;
+            --surface: #1a1a2e;
+            --text: #ffffff;
+            --text-secondary: #b8b8b8;
+            --card-bg: rgba(30, 30, 60, 0.7);
+            --neon-glow: 0 0 10px var(--primary), 0 0 20px var(--primary), 0 0 30px var(--primary);
+            --transition: all 0.3s ease;
+        }
+
+        /* Boy Theme 1 - Cyber Blue */
+        .theme-boy-1 {
+            --primary: #00d4ff;
+            --secondary: #0095ff;
+            --accent: #ff2975;
+            --background: #0a0e17;
+            --surface: #141a29;
+            --card-bg: rgba(20, 26, 41, 0.8);
+        }
+
+        /* Boy Theme 2 - Neon Green */
+        .theme-boy-2 {
+            --primary: #39ff14;
+            --secondary: #00ff88;
+            --accent: #ff2a6d;
+            --background: #0a1929;
+            --surface: #112240;
+            --card-bg: rgba(17, 34, 64, 0.8);
+        }
+
+        /* Girl Theme 1 - Cosmic Pink */
+        .theme-girl-1 {
+            --primary: #ff4da6;
+            --secondary: #ff8ecd;
+            --accent: #00f2fe;
+            --background: #1a0b2e;
+            --surface: #2d1b69;
+            --card-bg: rgba(45, 27, 105, 0.8);
+        }
+
+        /* Girl Theme 2 - Purple Nebula */
+        .theme-girl-2 {
+            --primary: #c471ed;
+            --secondary: #f7797d;
+            --accent: #4facfe;
+            --background: #0f0c29;
+            --surface: #302b63;
+            --card-bg: rgba(48, 43, 99, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: var(--transition);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.8s ease;
+        }
+
+        .welcome-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .logo {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: var(--neon-glow);
+            animation: pulse 2s infinite;
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .gender-selection {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .gender-btn {
+            padding: 15px 40px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+
+        .gender-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-selection {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .theme-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid white;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .theme-btn.active {
+            transform: scale(1.2);
+            box-shadow: 0 0 10px white;
+        }
+
+        .start-btn {
+            padding: 15px 50px;
+            background: white;
+            color: var(--primary);
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Header */
+        header {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: var(--neon-glow);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--primary);
+            box-shadow: var(--neon-glow);
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .theme-toggle, .user-profile {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--surface);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover, .user-profile:hover {
+            background: var(--primary);
+            box-shadow: var(--neon-glow);
+        }
+
+        /* Main Content */
+        .page {
+            display: none;
+            padding: 40px 0;
+            min-height: 80vh;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 0;
+            background: radial-gradient(circle at center, var(--surface) 0%, var(--background) 70%);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            color: var(--text-secondary);
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Partners Section */
+        .partners {
+            margin: 60px 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 3px;
+        }
+
+        .partners-scroll {
+            display: flex;
+            overflow: hidden;
+            padding: 20px 0;
+            position: relative;
+        }
+
+        .partners-scroll::before, .partners-scroll::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 100px;
+            height: 100%;
+            z-index: 2;
+        }
+
+        .partners-scroll::before {
+            left: 0;
+            background: linear-gradient(to right, var(--background), transparent);
+        }
+
+        .partners-scroll::after {
+            right: 0;
+            background: linear-gradient(to left, var(--background), transparent);
+        }
+
+        .partners-track {
+            display: flex;
+            animation: scroll 30s linear infinite;
+        }
+
+        .partner-logo {
+            height: 80px;
+            margin: 0 40px;
+            filter: grayscale(1) brightness(2);
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+
+        .partner-logo:hover {
+            filter: grayscale(0) brightness(1);
+            opacity: 1;
+        }
+
+        /* Courses Grid */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .course-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .course-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), var(--neon-glow);
+        }
+
+        .course-thumbnail {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .course-info {
+            padding: 20px;
+        }
+
+        .course-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .course-description {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .enroll-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .enroll-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* Video Player */
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            background: black;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-cover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .top-cover, .bottom-cover {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: var(--background);
+        }
+
+        .top-cover {
+            top: 0;
+        }
+
+        .bottom-cover {
+            bottom: 0;
+        }
+
+        .custom-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            z-index: 10;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            flex-grow: 1;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            margin: 0 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        /* Tutors Grid */
+        .tutors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .tutor-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .tutor-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), var(--neon-glow);
+        }
+
+        .tutor-photo {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .tutor-info {
+            padding: 20px;
+        }
+
+        .tutor-name {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .tutor-bio {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .tutor-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tutor-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .website-btn {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .courses-btn {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--surface);
+            padding: 40px 0 20px;
+            margin-top: 60px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            padding-left: 5px;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .gender-selection {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .courses-grid, .tutors-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="index.html">Nexora Learning Platform</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="tutors.html">Tutors</a></li>
-                    <li class="nav-item"><a class="nav-link" href="courses.html">Courses</a></li>
-                </ul>
-                <select id="theme-select" class="form-select w-auto">
-                    <option value="default">Default (Blue/Yellow)</option>
-                    <option value="bw">Black/White</option>
-                    <option value="greenwhite">Green/White</option>
-                    <option value="purplegold">Purple/Gold</option>
-                    <option value="redblack">Red/Black</option>
-                </select>
+    <!-- Welcome Screen -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="logo">Nexora</div>
+        <p class="tagline">A Free 2025 Advanced Level Video Learning Platform</p>
+        
+        <div class="gender-selection">
+            <button class="gender-btn" data-gender="boy">I'm a Boy</button>
+            <button class="gender-btn" data-gender="girl">I'm a Girl</button>
+        </div>
+        
+        <div class="theme-selection" id="themeSelection" style="display: none;">
+            <div class="theme-btn theme-boy-1 active" data-theme="boy-1"></div>
+            <div class="theme-btn theme-boy-2" data-theme="boy-2"></div>
+            <div class="theme-btn theme-girl-1" data-theme="girl-1"></div>
+            <div class="theme-btn theme-girl-2" data-theme="girl-2"></div>
+        </div>
+        
+        <button class="start-btn" id="startBtn" style="display: none;">Start Learning</button>
+    </div>
+
+    <!-- Main Website -->
+    <div id="mainWebsite" style="display: none;">
+        <header>
+            <div class="container nav-container">
+                <div class="nav-logo">Nexora</div>
+                <nav class="nav-links">
+                    <a href="#" class="nav-link active" data-page="home">Home</a>
+                    <a href="#" class="nav-link" data-page="courses">Courses</a>
+                    <a href="#" class="nav-link" data-page="tutors">Tutors</a>
+                    <a href="#" class="nav-link" data-page="content">Course Content</a>
+                </nav>
+                <div class="user-actions">
+                    <div class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <div class="user-profile">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
             </div>
-        </div>
-    </nav>
+        </header>
 
-    <header class="hero bg-primary text-white text-center py-5">
-        <div class="container">
-            <h1>Welcome to Nexora Learning Platform</h1>
-            <p>A free platform offering advanced level video courses for 2025 exam preparation. Designed for students aged 17-23 to learn effectively and engagingly.</p>
-            <a href="courses.html" class="btn btn-secondary">Browse Courses</a>
-        </div>
-    </header>
+        <main>
+            <!-- Home Page -->
+            <section class="page active" id="home">
+                <div class="container">
+                    <div class="hero">
+                        <h1>Welcome to Nexora Learning</h1>
+                        <p>Embark on an educational journey through our futuristic learning platform. Master advanced level science with interactive video lessons from expert tutors.</p>
+                        <a href="#" class="cta-button" data-page="courses">Explore Courses</a>
+                    </div>
 
-    <section class="featured-courses container my-5">
-        <h2>Featured Courses</h2>
-        <div id="featured-list" class="row"></div>
-    </section>
+                    <div class="partners">
+                        <h2 class="section-title">Our Verified Partners</h2>
+                        <div class="partners-scroll">
+                            <div class="partners-track">
+                                <img src="https://via.placeholder.com/150x80/6a11cb/ffffff?text=Science+Org" alt="Partner" class="partner-logo">
+                                <img src="https://via.placeholder.com/150x80/2575fc/ffffff?text=EduTech" alt="Partner" class="partner-logo">
+                                <img src="https://via.placeholder.com/150x80/ff4da6/ffffff?text=Learn+Lab" alt="Partner" class="partner-logo">
+                                <img src="https://via.placeholder.com/150x80/00d4ff/ffffff?text=STEM+Academy" alt="Partner" class="partner-logo">
+                                <img src="https://via.placeholder.com/150x80/39ff14/ffffff?text=Science+World" alt="Partner" class="partner-logo">
+                                <img src="https://via.placeholder.com/150x80/c471ed/ffffff?text=Future+Edu" alt="Partner" class="partner-logo">
+                                <!-- Duplicate for seamless scroll -->
+                                <img src="https://via.placeholder.com/150x80/6a11cb/ffffff?text=Science+Org" alt="Partner" class="partner-logo">
+                                <img src="https://via.placeholder.com/150x80/2575fc/ffffff?text=EduTech" alt="Partner" class="partner-logo">
+                                <img src="https://via.placeholder.com/150x80/ff4da6/ffffff?text=Learn+Lab" alt="Partner" class="partner-logo">
+                                <img src="https://via.placeholder.com/150x80/00d4ff/ffffff?text=STEM+Academy" alt="Partner" class="partner-logo">
+                                <img src="https://via.placeholder.com/150x80/39ff14/ffffff?text=Science+World" alt="Partner" class="partner-logo">
+                                <img src="https://via.placeholder.com/150x80/c471ed/ffffff?text=Future+Edu" alt="Partner" class="partner-logo">
+                            </div>
+                        </div>
+                    </div>
 
-    <section class="partners container my-5">
-        <h2>Verified Partners</h2>
-        <div class="d-flex overflow-auto gap-3">
-            <img src="https://via.placeholder.com/150x50?text=Partner1" alt="Partner 1" class="img-fluid">
-            <img src="https://via.placeholder.com/150x50?text=Partner2" alt="Partner 2" class="img-fluid">
-            <img src="https://via.placeholder.com/150x50?text=Partner3" alt="Partner 3" class="img-fluid">
-            <img src="https://via.placeholder.com/150x50?text=Partner4" alt="Partner 4" class="img-fluid">
-            <img src="https://via.placeholder.com/150x50?text=Partner5" alt="Partner 5" class="img-fluid">
-            <img src="https://via.placeholder.com/150x50?text=Partner6" alt="Partner 6" class="img-fluid">
-        </div>
-    </section>
+                    <div class="featured-courses">
+                        <h2 class="section-title">Featured Courses</h2>
+                        <div class="courses-grid">
+                            <!-- Course cards will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-    <script src="config.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="script.js"></script>
+            <!-- Courses Page -->
+            <section class="page" id="courses">
+                <div class="container">
+                    <h1 class="section-title">All Courses</h1>
+                    <div class="courses-grid">
+                        <!-- Course cards will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tutors Page -->
+            <section class="page" id="tutors">
+                <div class="container">
+                    <h1 class="section-title">Our Expert Tutors</h1>
+                    <div class="tutors-grid">
+                        <!-- Tutor cards will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Course Content Page -->
+            <section class="page" id="content">
+                <div class="container">
+                    <h1 class="section-title">Course Content</h1>
+                    <div class="courses-grid">
+                        <!-- Course content cards will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h3>About Nexora</h3>
+                        <p>Nexora is a futuristic learning platform designed for advanced level science students. We provide high-quality video lessons from expert tutors.</p>
+                    </div>
+                    <div class="footer-section">
+                        <h3>Quick Links</h3>
+                        <ul class="footer-links">
+                            <li><a href="#" data-page="home">Home</a></li>
+                            <li><a href="#" data-page="courses">Courses</a></li>
+                            <li><a href="#" data-page="tutors">Tutors</a></li>
+                            <li><a href="#" data-page="content">Course Content</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h3>Contact Us</h3>
+                        <ul class="footer-links">
+                            <li><i class="fas fa-envelope"></i> info@nexora.com</li>
+                            <li><i class="fas fa-phone"></i> +1 234 567 8900</li>
+                            <li><i class="fas fa-map-marker-alt"></i> 123 Science Street, EduCity</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="copyright">
+                    &copy; 2025 Nexora Learning Platform. All rights reserved.
+                </div>
+            </div>
+        </footer>
+    </div>
+
     <script>
-        loadFeatured();
-        initTheme();
+        // Configuration
+        const CONFIG = {
+            API_KEY: 'AIzaSyDzdiDMtiY250DS-lDuZeIZOocw9oqMlhM',
+            SPREADSHEET_ID: '1XFR_1XAV5rHr6Sbmc9wqy363UjzZqb_7i4fPBRQcxBE'
+        };
+
+        // Global variables
+        let userData = {
+            gender: null,
+            theme: null,
+            progress: {}
+        };
+
+        // DOM Elements
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const mainWebsite = document.getElementById('mainWebsite');
+        const genderBtns = document.querySelectorAll('.gender-btn');
+        const themeSelection = document.getElementById('themeSelection');
+        const themeBtns = document.querySelectorAll('.theme-btn');
+        const startBtn = document.getElementById('startBtn');
+        const themeToggle = document.getElementById('themeToggle');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const pages = document.querySelectorAll('.page');
+
+        // Initialize the application
+        function init() {
+            // Check if user data exists in localStorage
+            const savedUserData = localStorage.getItem('nexoraUserData');
+            if (savedUserData) {
+                userData = JSON.parse(savedUserData);
+                applyTheme(userData.theme);
+                showMainWebsite();
+            } else {
+                // Show welcome screen
+                welcomeScreen.classList.remove('hidden');
+            }
+
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Load data from Google Sheets
+            loadDataFromSheets();
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Gender selection
+            genderBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const gender = this.getAttribute('data-gender');
+                    userData.gender = gender;
+                    
+                    // Show appropriate theme options
+                    themeSelection.style.display = 'flex';
+                    themeBtns.forEach(themeBtn => {
+                        if (themeBtn.getAttribute('data-theme').startsWith(gender)) {
+                            themeBtn.style.display = 'block';
+                        } else {
+                            themeBtn.style.display = 'none';
+                        }
+                    });
+                    
+                    // Select first theme by default
+                    const firstTheme = document.querySelector(`.theme-btn[data-theme^="${gender}"]`);
+                    if (firstTheme) {
+                        firstTheme.click();
+                    }
+                    
+                    startBtn.style.display = 'block';
+                });
+            });
+
+            // Theme selection
+            themeBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    themeBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    userData.theme = this.getAttribute('data-theme');
+                });
+            });
+
+            // Start button
+            startBtn.addEventListener('click', function() {
+                // Save user data to localStorage
+                localStorage.setItem('nexoraUserData', JSON.stringify(userData));
+                
+                // Apply theme and show main website
+                applyTheme(userData.theme);
+                showMainWebsite();
+            });
+
+            // Theme toggle in header
+            themeToggle.addEventListener('click', function() {
+                // Cycle through themes for the current gender
+                const currentGender = userData.gender;
+                const currentTheme = userData.theme;
+                const genderThemes = Array.from(themeBtns)
+                    .filter(btn => btn.getAttribute('data-theme').startsWith(currentGender))
+                    .map(btn => btn.getAttribute('data-theme'));
+                
+                const currentIndex = genderThemes.indexOf(currentTheme);
+                const nextIndex = (currentIndex + 1) % genderThemes.length;
+                const nextTheme = genderThemes[nextIndex];
+                
+                userData.theme = nextTheme;
+                applyTheme(nextTheme);
+                localStorage.setItem('nexoraUserData', JSON.stringify(userData));
+            });
+
+            // Navigation
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const page = this.getAttribute('data-page');
+                    
+                    // Update active nav link
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show selected page
+                    pages.forEach(p => p.classList.remove('active'));
+                    document.getElementById(page).classList.add('active');
+                });
+            });
+
+            // Page links in footer
+            document.querySelectorAll('.footer-links a[data-page]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const page = this.getAttribute('data-page');
+                    
+                    // Update active nav link
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    document.querySelector(`.nav-link[data-page="${page}"]`).classList.add('active');
+                    
+                    // Show selected page
+                    pages.forEach(p => p.classList.remove('active'));
+                    document.getElementById(page).classList.add('active');
+                });
+            });
+        }
+
+        // Apply theme to the website
+        function applyTheme(theme) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-boy-1', 'theme-boy-2', 'theme-girl-1', 'theme-girl-2');
+            
+            // Add the selected theme class
+            document.body.classList.add(`theme-${theme}`);
+            
+            // Update theme buttons active state
+            themeBtns.forEach(btn => {
+                if (btn.getAttribute('data-theme') === theme) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        // Show main website and hide welcome screen
+        function showMainWebsite() {
+            welcomeScreen.classList.add('hidden');
+            setTimeout(() => {
+                welcomeScreen.style.display = 'none';
+                mainWebsite.style.display = 'block';
+            }, 800);
+        }
+
+        // Load data from Google Sheets
+        function loadDataFromSheets() {
+            // In a real implementation, we would fetch data from Google Sheets API
+            // For this demo, we'll use mock data
+            
+            // Mock courses data
+            const courses = [
+                {
+                    id: 1,
+                    title: "Advanced Physics - Mechanics",
+                    teacher: "Dr. Darshana Ukuwela",
+                    subject: "Physics",
+                    thumbnail: "https://via.placeholder.com/300x180/6a11cb/ffffff?text=Physics",
+                    description: "Master the fundamentals of mechanics with practical examples and problem-solving techniques."
+                },
+                {
+                    id: 2,
+                    title: "Organic Chemistry Fundamentals",
+                    teacher: "Dr. Samantha Perera",
+                    subject: "Chemistry",
+                    thumbnail: "https://via.placeholder.com/300x180/2575fc/ffffff?text=Chemistry",
+                    description: "Explore the world of organic compounds, reactions, and molecular structures."
+                },
+                {
+                    id: 3,
+                    title: "Biology - Genetics and Evolution",
+                    teacher: "Prof. James Fernando",
+                    subject: "Biology",
+                    thumbnail: "https://via.placeholder.com/300x180/ff4da6/ffffff?text=Biology",
+                    description: "Dive into the principles of genetics, DNA, and evolutionary biology."
+                },
+                {
+                    id: 4,
+                    title: "Advanced Mathematics - Calculus",
+                    teacher: "Dr. Darshana Ukuwela",
+                    subject: "Mathematics",
+                    thumbnail: "https://via.placeholder.com/300x180/00d4ff/ffffff?text=Mathematics",
+                    description: "Understand differential and integral calculus with real-world applications."
+                }
+            ];
+
+            // Mock tutors data
+            const tutors = [
+                {
+                    id: 1,
+                    name: "Dr. Darshana Ukuwela",
+                    bio: "PhD in Physics with 15 years of teaching experience. Specialized in mechanics and astrophysics.",
+                    photo: "https://via.placeholder.com/280x200/6a11cb/ffffff?text=Dr.+Darshana",
+                    website: "https://darshanaukuwela.com"
+                },
+                {
+                    id: 2,
+                    name: "Dr. Samantha Perera",
+                    bio: "Chemistry expert with research background in organic synthesis and pharmaceutical chemistry.",
+                    photo: "https://via.placeholder.com/280x200/2575fc/ffffff?text=Dr.+Samantha",
+                    website: "https://samanthaperera.com"
+                },
+                {
+                    id: 3,
+                    name: "Prof. James Fernando",
+                    bio: "Renowned biologist and author of several textbooks on genetics and evolutionary biology.",
+                    photo: "https://via.placeholder.com/280x200/ff4da6/ffffff?text=Prof.+James",
+                    website: "https://jamesfernando.com"
+                }
+            ];
+
+            // Populate courses
+            const coursesGrids = document.querySelectorAll('.courses-grid');
+            courses.forEach(course => {
+                const courseCard = createCourseCard(course);
+                coursesGrids.forEach(grid => {
+                    if (!grid.classList.contains('tutors-grid')) {
+                        grid.appendChild(courseCard.cloneNode(true));
+                    }
+                });
+            });
+
+            // Populate tutors
+            const tutorsGrid = document.querySelector('.tutors-grid');
+            tutors.forEach(tutor => {
+                const tutorCard = createTutorCard(tutor);
+                tutorsGrid.appendChild(tutorCard);
+            });
+        }
+
+        // Create course card element
+        function createCourseCard(course) {
+            const card = document.createElement('div');
+            card.className = 'course-card';
+            card.innerHTML = `
+                <img src="${course.thumbnail}" alt="${course.title}" class="course-thumbnail">
+                <div class="course-info">
+                    <h3 class="course-title">${course.title}</h3>
+                    <div class="course-meta">
+                        <span>${course.teacher}</span>
+                        <span>${course.subject}</span>
+                    </div>
+                    <p class="course-description">${course.description}</p>
+                    <button class="enroll-btn">Enroll Now</button>
+                </div>
+            `;
+            
+            // Add event listener to enroll button
+            card.querySelector('.enroll-btn').addEventListener('click', function() {
+                alert(`Enrolled in ${course.title}!`);
+                // In a real implementation, this would track user progress
+            });
+            
+            return card;
+        }
+
+        // Create tutor card element
+        function createTutorCard(tutor) {
+            const card = document.createElement('div');
+            card.className = 'tutor-card';
+            card.innerHTML = `
+                <img src="${tutor.photo}" alt="${tutor.name}" class="tutor-photo">
+                <div class="tutor-info">
+                    <h3 class="tutor-name">${tutor.name}</h3>
+                    <p class="tutor-bio">${tutor.bio}</p>
+                    <div class="tutor-actions">
+                        <button class="tutor-btn website-btn">Website</button>
+                        <button class="tutor-btn courses-btn">Courses</button>
+                    </div>
+                </div>
+            `;
+            
+            // Add event listeners to buttons
+            card.querySelector('.website-btn').addEventListener('click', function() {
+                window.open(tutor.website, '_blank');
+            });
+            
+            card.querySelector('.courses-btn').addEventListener('click', function() {
+                // Filter and show courses by this tutor
+                alert(`Showing courses by ${tutor.name}`);
+                // In a real implementation, this would filter the courses page
+            });
+            
+            return card;
+        }
+
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
