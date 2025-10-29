@@ -1,36 +1,91 @@
+/* styles.css */
+:root {
+    --primary: #007BFF;
+    --secondary: #FFC107;
+    --bs-primary: var(--primary);
+    --bs-secondary: var(--secondary);
+}
+
+.theme-bw {
+    --primary: #000000;
+    --secondary: #FFFFFF;
+}
+
+.theme-greenwhite {
+    --primary: #28A745;
+    --secondary: #FFFFFF;
+}
+
+.theme-purplegold {
+    --primary: #6F42C1;
+    --secondary: #FFD700;
+}
+
+.theme-redblack {
+    --primary: #DC3545;
+    --secondary: #000000;
+}
 
 body {
     font-family: Arial, sans-serif;
 }
 
+.hero {
+    background-color: var(--primary);
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-secondary {
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+}
+
 .player-wrapper {
     position: relative;
     width: 100%;
-    height: 360px; /* Adjustable base height */
+    height: 360px;
     overflow: hidden;
     background: black;
 }
 
 #player {
     position: absolute;
-    top: -90px; /* Cover 90px from top */
+    top: -60px;
     left: 0;
     width: 100%;
-    height: calc(100% + 180px); /* Add 180px to height to cover top and bottom 90px each */
-    pointer-events: none; /* No direct interaction with the YouTube player */
+    height: calc(100% + 120px);
+    pointer-events: none;
 }
 
 @media (max-width: 768px) {
     .player-wrapper {
-        height: 200px; /* Smaller on mobile */
+        height: 200px;
     }
     #player {
-        top: -50px; /* Adjust covering for smaller screens, or keep 90px if fixed */
-        height: calc(100% + 100px);
+        top: -30px;
+        height: calc(100% + 60px);
     }
 }
 
 .card-img-top {
     height: 200px;
     object-fit: cover;
+}
+
+.list-view .card {
+    flex-direction: row;
+    align-items: center;
+}
+
+.list-view .card-img-top {
+    width: 150px;
+    height: auto;
+}
+
+.list-view .card-body {
+    flex: 1;
 }
