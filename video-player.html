@@ -1,0 +1,58 @@
+<!-- video-player.html (Video Player Page) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexora Learning Platform - Video Player</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">Nexora Learning Platform</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="tutors.html">Tutors</a></li>
+                    <li class="nav-item"><a class="nav-link" href="courses.html">Courses</a></li>
+                </ul>
+                <select id="theme-select" class="form-select w-auto">
+                    <option value="default">Default (Blue/Yellow)</option>
+                    <option value="bw">Black/White</option>
+                    <option value="greenwhite">Green/White</option>
+                    <option value="purplegold">Purple/Gold</option>
+                    <option value="redblack">Red/Black</option>
+                </select>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <h1 id="video-title"></h1>
+        <div id="player-container" class="player-wrapper mb-4">
+            <div id="player"></div>
+        </div>
+        <div id="custom-controls" class="mb-3" style="display: none;">
+            <button id="play-btn" class="btn btn-primary">Play</button>
+            <button id="pause-btn" class="btn btn-secondary">Pause</button>
+        </div>
+        <section class="next-videos mt-5">
+            <h2>Next Videos in This Lesson</h2>
+            <div id="next-list" class="row"></div>
+        </section>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        loadVideoPlayer();
+        initTheme();
+    </script>
+</body>
+</html>
